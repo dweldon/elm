@@ -29,6 +29,9 @@ main(["install"|LibNames]) ->
              end,
     ToInstall = lists:filter(Filter, Libs),
     [install(Dir, L) || L <- ToInstall];
+main(["remove"|LibNames]) ->
+    {install_dir, Dir, libs, _} = read_config(),
+    [remove(Dir, L) || L <- LibNames];
 main(_) ->
     usage().
 
@@ -37,6 +40,7 @@ usage() ->
     io:format("\telm list - list all available libraries~n"),
     io:format("\telm upgrade - upgrade installed libraries~n"),
     io:format("\telm install [Libraries] - install the named libraries~n"),
+    io:format("\telm remove [Libraries] - remove the named libraries~n"),
     io:format("~n"),
     io:format("\texample:~n"),
     io:format("\telm install mochiweb ibrowse estring~n~n"),
@@ -73,6 +77,16 @@ check_upgrade_and_build(Name, Response, Contains, Path) ->
             io:format("~s upgraded... ", [Name]),
             build(Path);
         false -> ok
+    end.
+
+remove(Dir, Name) ->
+    Path = filename:join(Dir, Name),
+    os:cmd("rm -rf " ++ Path),
+    case filelib:is_dir(Path) of
+        false ->
+            io:format("~s removed~n", [Name]);
+        true ->
+            io:format("~s not removed~n", [Name])
     end.
 
 install(Dir, Lib = {name, _, type, _, inst, true, url, _}) ->

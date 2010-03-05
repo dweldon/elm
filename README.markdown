@@ -43,13 +43,11 @@ limitations
 examples
 --------
 install mochiweb and ibrowse
-
     elm install mochiweb ibrowse
     ibrowse installed... built
     mochiweb installed... built
 
 check that that these were installed
-
     elm list
     + ibrowse
     + mochiweb
@@ -58,3 +56,7 @@ check that that these were installed
 some time later, upgrade all installed libraries
     elm upgrade
     ibrowse upgraded... built
+
+remove mochiweb
+    elm remove mochiweb
+    mochiweb removed
