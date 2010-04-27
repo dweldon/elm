@@ -195,9 +195,10 @@ is_git(Url) ->
 is_svn(Url) ->
     contains(Url, "/svn/") andalso contains(Url, "googlecode.com").
 
-% hg only works on bitbucket and googlecode
+% hg only works on bitbucket, basho, and googlecode
 is_hg(Url) ->
     contains(Url, "bitbucket.org") orelse
+    contains(Url, "hg.basho.com") orelse
     (contains(Url, "/hg/") andalso contains(Url, "googlecode.com")).
 
 begins_with(String, SubString) ->

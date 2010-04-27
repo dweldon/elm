@@ -37,7 +37,7 @@ limitations
 -----------
 * only hg, svn, and git are currently supported
 * svn repositories currently only work on googlecode.com
-* hg repositories currently only work on googlecode.com and bitbucket.org
+* hg repositories currently only work on googlecode.com, basho.com, and bitbucket.org
 * automatic building currently only works for libraries which use make or rebar
 
 examples
