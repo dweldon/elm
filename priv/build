@@ -1,0 +1,36 @@
+%% Code based on the boostrap script in rebar: http://bitbucket.org/basho/rebar/
+
+% -*- mode:erlang -*-
+
+main(_) ->
+    os:cmd("cd .."),
+    case make:files(filelib:wildcard("src/*.erl"), [{outdir, "ebin"}]) of
+        up_to_date -> ok;
+        error ->
+            io:format("failed to compile elm source~n"),
+            halt(1)
+    end,
+    true = code:add_path("ebin"),
+    Files = load_files("*", "ebin"),
+    case zip:create("mem", Files, [memory]) of
+        {ok, {"mem", ZipBin}} ->
+            Script = <<"#!/usr/bin/env escript\n", ZipBin/binary>>,
+            case file:write_file("elm", Script) of
+                ok -> ok;
+                {error, WriteError} ->
+                    io:format("failed to build elm: ~p~n", [WriteError]),
+                    halt(1)
+            end;
+        {error, ZipError} ->
+            io:format("failed to build elm: ~p~n", [ZipError]),
+            halt(1)
+    end,
+    os:cmd("chmod u+x elm"),
+    io:format("elm built successfully~n").
+
+load_files(Wildcard, Dir) ->
+    [read_file(Filename, Dir) || Filename <- filelib:wildcard(Wildcard, Dir)].
+
+read_file(Filename, Dir) ->
+    {ok, Bin} = file:read_file(filename:join(Dir, Filename)),
+    {Filename, Bin}.

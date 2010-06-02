@@ -1,30 +1,62 @@
 overview
 --------
-elm (erlang library manager) lets you install and upgrade your erlang libraries
-without using a central repository. Based on a simple config file, it pulls
-source code directly from your favorite git, mercurial, or svn repositories.
+elm (erlang library manager) lets you install, uninstall, and update your erlang
+libraries with a simple command-line interface. Because elm uses your vcs tools,
+(git, svn, and hg), it can rapidly detect which libraries are out of date and
+update them with minimal network usage. Dependency checking is coming soon.
 
 installation
 ------------
 1. `git clone git://github.com/dweldon/elm.git`
-2. create a .elm file in your home directory (see below)
-3. run elm with no arguments for help
-4. make sure to have hg, git, or svn installed as needed for your repositories
+2. `cd elm && make`
+3. place elm in your path, e.g. `sudo ln -s /usr/local/lib/erlang/lib/elm/elm /usr/local/bin/elm`
+4. install hg, git, and/or svn as needed for your repositories
 
-.elm files
-----------
-Create a .elm file in your home directory. The following example shows a .elm
-file which will allow us to install ibrowse, mochiweb, and webmachine:
+getting started
+---------------
+1. see availabe commands with `elm help`
+2. build your .elm file (see next section)
+3. install your libraries, e.g. `elm install mochiweb ibrowse`
 
-    #/usr/local/lib/erlang/lib
+.elm file
+---------
+The following example sets your library install directory and adds ibrowse,
+mochiweb, and webmachine to the list of available libraries.
+
+    elm set-directory /usr/local/lib/erlang/lib
+    elm add-url git://github.com/cmullaparthi/ibrowse.git
+    elm add-url http://mochiweb.googlecode.com/svn/trunk
+    elm add-url http://bitbucket.org/justin/webmachine
+
+This will create a .elm file in your $HOME directory that looks like:
+
+    #/usr/local/lib/erlang/lib 
+    git://github.com/dweldon/elm.git
     git://github.com/cmullaparthi/ibrowse.git
     http://mochiweb.googlecode.com/svn/trunk
     http://bitbucket.org/justin/webmachine
 
-If the first line begins with a #, elm interprets this as the library
-installation directory (otherwise `code:lib_dir()` is used). The remaining lines
-are the repository urls that elm will use for code updates. All blank lines and
-lines which begin with # (other than the first line) will be ignored.
+examples
+--------
+install mochiweb and ibrowse
+    elm install mochiweb ibrowse
+    installing mochiweb... built
+    installing ibrowse... built
+
+see which libraries are installed
+    elm list
+    + elm
+    + ibrowse
+    + mochiweb
+      webmachine
+
+update all installed libraries
+    elm update
+    updating ibrowse... built
+
+uninstall mochiweb
+    elm uninstall mochiweb
+    uninstalled mochiweb
 
 how it works
 ------------
@@ -39,24 +71,3 @@ limitations
 * svn repositories currently only work on googlecode.com
 * hg repositories currently only work on googlecode.com, basho.com, and bitbucket.org
 * automatic building currently only works for libraries which use make or rebar
-
-examples
---------
-install mochiweb and ibrowse
-    elm install mochiweb ibrowse
-    ibrowse installed... built
-    mochiweb installed... built
-
-check that that these were installed
-    elm list
-    + ibrowse
-    + mochiweb
-      webmachine
-
-some time later, upgrade all installed libraries
-    elm upgrade
-    ibrowse upgraded... built
-
-remove mochiweb
-    elm remove mochiweb
-    mochiweb removed
